@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Catatan Uang</title>
+<style>
+:root{--bg:#fff;--bg2:#f2f2f2;--fg:#0a0a0a;--mut:#767676;--line:#e2e2e2;--red:#e11d48;--green:#16a34a;--blue:#2563eb;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0a0a0a;--bg2:#171717;--fg:#f5f5f5;--mut:#8c8c8c;--line:#262626;--red:#f43f5e;--green:#22c55e;--blue:#3b82f6}}
+:root[data-theme="dark"]{--bg:#0a0a0a;--bg2:#171717;--fg:#f5f5f5;--mut:#8c8c8c;--line:#262626;--red:#f43f5e;--green:#22c55e;--blue:#3b82f6}
+html.menu[class]{--bg:#000;--bg2:#141414;--fg:#fff;--mut:#8c8c8c;--line:#262626;--red:#f43f5e;--green:#22c55e;--blue:#3b82f6}
+html{scroll-padding-top:env(safe-area-inset-top,0px);background:var(--bg)}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0}
+body{background:var(--bg);color:var(--fg);font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;-webkit-font-smoothing:antialiased}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer;-webkit-tap-highlight-color:transparent;padding:0}
+#app{display:flex;flex-direction:column;min-height:100%}
+.wrap{flex:1;width:100%;max-width:480px;margin:0 auto;padding:20px;display:flex;flex-direction:column}
+.menu-wrap{justify-content:space-between;gap:28px}
+.date{color:var(--mut);font-size:15px}
+h1{font-size:34px;margin:6px 0 18px;letter-spacing:-.02em}
+h2{font-size:28px;margin:10px 0 18px;letter-spacing:-.02em}
+.bal span{display:block;color:var(--mut);font-size:14px}
+.bal b{font-size:30px;letter-spacing:-.02em}
+.big{display:flex;align-items:center;gap:14px;width:100%;padding:22px 20px;margin-bottom:12px;border:1.5px solid var(--c);border-radius:16px;background:var(--bg2);color:var(--c);font-size:20px;font-weight:600;text-align:left;transition:transform .12s}
+.big i{display:grid;place-items:center;width:36px;height:36px;border-radius:50%;background:var(--c);color:#000;font-style:normal;font-size:22px;line-height:1}
+.big:active{transform:scale(.97);background:var(--c);color:#000}
+.big:active i{background:#000;color:var(--c)}
+.links{display:flex;justify-content:center;gap:28px;color:var(--mut);font-size:15px}
+.links button{padding:8px 4px;border-bottom:1px solid var(--line)}
+.back{align-self:flex-start;color:var(--mut);font-size:15px;padding:6px 0}
+label{display:block;color:var(--mut);font-size:14px;margin:20px 0 8px}
+.f{width:100%;background:var(--bg2);border:1px solid var(--line);color:var(--fg);padding:14px;border-radius:12px;font:inherit;font-size:16px;outline:0}
+.f:focus{border-color:var(--mut)}
+.amt{display:flex;align-items:baseline;gap:10px;border-bottom:2px solid var(--c)}
+.amt.err{border-color:var(--red);animation:sh .3s}
+.amt span{color:var(--mut);font-size:22px}
+.amt input{width:100%;background:transparent;border:0;outline:0;color:var(--fg);font:inherit;font-size:42px;font-weight:700;padding:6px 0;letter-spacing:-.02em}
+@keyframes sh{25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+.hint{color:var(--red);font-size:13px;margin-top:8px;min-height:16px}
+.save{margin-top:24px;padding:18px;border-radius:14px;background:var(--c);color:#fff;font-weight:600;font-size:17px}
+.save:active{opacity:.85}
+.nav{display:flex;align-items:center;justify-content:space-between;margin:4px 0 18px;font-weight:600;text-align:center}
+.nav button{width:40px;height:40px;border-radius:50%;background:var(--bg2);font-size:20px}
+.tri{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px}
+.tri div{background:var(--bg2);border-radius:12px;padding:10px}
+.tri small{display:block;color:var(--mut);font-size:12px;margin-bottom:2px}
+.tri b{font-size:13px}
+.row{display:flex;align-items:center;gap:10px;padding:14px 0;border-bottom:1px solid var(--line)}
+.row .t{flex:1;min-width:0}
+.row .t b{display:block;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.row small{color:var(--mut)}
+.row .a{font-weight:600;white-space:nowrap}
+.row .x{color:var(--mut);padding:8px;font-size:18px}
+.row .x.ask{color:var(--red);font-size:14px;font-weight:600}
+.empty{color:var(--mut);text-align:center;padding:36px 0}
+.card{background:var(--bg2);border-radius:16px;padding:20px;margin-bottom:12px}
+.card small{color:var(--mut)}
+.card .n{font-size:32px;font-weight:700;letter-spacing:-.02em;display:block;margin-top:2px}
+.sr{display:flex;justify-content:space-between;align-items:center;padding:13px 0;border-bottom:1px solid var(--line)}
+.sr:last-child{border:0}
+.sr b{font-weight:600}
+.sec{color:var(--mut);font-size:14px;margin:22px 0 4px}
+.d{display:flex;justify-content:space-between;align-items:center;gap:8px;width:100%;padding:13px 0;border-bottom:1px solid var(--line);text-align:left}
+.d span:first-child{min-width:64px}
+.d .v{display:flex;flex-wrap:wrap;justify-content:flex-end;gap:2px 10px;font-size:13px;font-weight:600}
+#toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--fg);color:var(--bg);padding:12px 20px;border-radius:999px;font-weight:600;font-size:14px}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script>
+const KEY='catatanuang.v1';
+let data=[];
+try{data=JSON.parse(localStorage.getItem(KEY)||'[]')}catch(e){data=[]}
+const persist=()=>{try{localStorage.setItem(KEY,JSON.stringify(data))}catch(e){}};
+const T={in:{n:'Pemasukan',c:'var(--green)',s:'+'},out:{n:'Pengeluaran',c:'var(--red)',s:'−'},sed:{n:'Sedekah',c:'var(--blue)',s:'−'}};
+const pad=n=>String(n).padStart(2,'0');
+const iso=d=>d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());
+const parse=s=>{const [y,m,d]=s.split('-').map(Number);return new Date(y,m-1,d)};
+const rp=n=>(n<0?'−':'')+'Rp '+Math.abs(Math.round(n)).toLocaleString('id-ID');
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const sum=(l,t)=>l.filter(x=>x.type===t).reduce((a,x)=>a+x.amount,0);
+const fd=(s,o)=>parse(s).toLocaleDateString('id-ID',o);
+const today=()=>iso(new Date());
+let st={view:'menu',type:'in',day:today(),month:today().slice(0,7),del:null,toast:''};
+
+function menu(){
+  const now=new Date(),l=data.filter(x=>x.date.startsWith(today().slice(0,7)));
+  const bal=sum(l,'in')-sum(l,'out')-sum(l,'sed');
+  return `<div class="wrap menu-wrap">
+  <div><div class="date">${now.toLocaleDateString('id-ID',{weekday:'long',day:'numeric',month:'long',year:'numeric'})}</div>
+  <h1>Catatan Uang</h1>
+  <div class="bal"><span>Saldo bulan ini</span><b>${rp(bal)}</b></div></div>
+  <div>${['in','out','sed'].map(t=>`<button class="big" style="--c:${T[t].c}" data-a="add" data-t="${t}"><i>+</i>${T[t].n}</button>`).join('')}</div>
+  <div class="links"><button data-a="day">Riwayat harian</button><button data-a="month">Resume bulanan</button></div></div>`;
+}
+function add(){
+  const t=T[st.type];
+  return `<div class="wrap"><button class="back" data-a="menu">← Kembali</button>
+  <h2 style="color:${t.c}">${t.n}</h2>
+  <label>Nominal</label>
+  <div class="amt" id="amtbox" style="--c:${t.c}"><span>Rp</span><input id="amt" inputmode="numeric" placeholder="0" autocomplete="off"></div>
+  <div class="hint" id="hint"></div>
+  <label>Catatan (opsional)</label><input id="note" class="f" maxlength="60" placeholder="Contoh: makan siang">
+  <label>Tanggal</label><input id="dt" class="f" type="date" value="${today()}">
+  <button class="save" style="--c:${t.c}" data-a="save">Simpan</button></div>`;
+}
+function row(x){
+  const t=T[x.type],ask=st.del===x.id;
+  return `<div class="row"><div class="t"><b>${esc(x.note||t.n)}</b><small>${t.n}</small></div>
+  <span class="a" style="color:${t.c}">${t.s} ${rp(x.amount)}</span>
+  <button class="x${ask?' ask':''}" data-a="del" data-id="${x.id}">${ask?'Hapus?':'×'}</button></div>`;
+}
+function day(){
+  const l=data.filter(x=>x.date===st.day);
+  return `<div class="wrap"><button class="back" data-a="menu">← Menu</button><h2>Riwayat harian</h2>
+  <div class="nav"><button data-a="dprev">‹</button><span>${fd(st.day,{weekday:'long',day:'numeric',month:'long',year:'numeric'})}</span><button data-a="dnext">›</button></div>
+  <div class="tri">${['in','out','sed'].map(t=>`<div><small>${T[t].n}</small><b style="color:${T[t].c}">${rp(sum(l,t))}</b></div>`).join('')}</div>
+  <div>${l.length?l.slice().reverse().map(row).join(''):'<p class="empty">Belum ada catatan di hari ini. Kembali ke menu untuk menambah.</p>'}</div></div>`;
+}
+function month(){
+  const l=data.filter(x=>x.date.startsWith(st.month));
+  const i=sum(l,'in'),o=sum(l,'out'),s=sum(l,'sed');
+  const [y,m]=st.month.split('-').map(Number);
+  const days=[...new Set(l.map(x=>x.date))].sort().reverse();
+  return `<div class="wrap"><button class="back" data-a="menu">← Menu</button><h2>Resume bulanan</h2>
+  <div class="nav"><button data-a="mprev">‹</button><span>${new Date(y,m-1,1).toLocaleDateString('id-ID',{month:'long',year:'numeric'})}</span><button data-a="mnext">›</button></div>
+  <div class="card"><small>Saldo (pemasukan − pengeluaran − sedekah)</small><span class="n">${rp(i-o-s)}</span></div>
+  <div class="card" style="padding:6px 20px">
+  <div class="sr"><span>Total pemasukan</span><b style="color:var(--green)">${rp(i)}</b></div>
+  <div class="sr"><span>Total pengeluaran</span><b style="color:var(--red)">${rp(o)}</b></div>
+  <div class="sr"><span>Total sedekah</span><b style="color:var(--blue)">${rp(s)}</b></div></div>
+  <div class="sec">Per hari</div>
+  ${days.length?days.map(d=>{const q=l.filter(x=>x.date===d);return `<button class="d" data-a="goday" data-d="${d}"><span>${fd(d,{weekday:'short',day:'numeric'})}</span><span class="v">${['in','out','sed'].map(t=>{const v=sum(q,t);return v?`<span style="color:${T[t].c}">${T[t].s}${rp(v).replace('Rp ','')}</span>`:''}).join('')}</span></button>`}).join(''):'<p class="empty">Belum ada catatan di bulan ini.</p>'}</div>`;
+}
+const V={menu,add,day,month};
+function render(){
+  document.documentElement.classList.toggle('menu',st.view==='menu');
+  document.getElementById('app').innerHTML=V[st.view]()+(st.toast?`<div id="toast">${st.toast}</div>`:'');
+  window.scrollTo(0,0);
+  if(st.view==='add')setTimeout(()=>{const a=document.getElementById('amt');a&&a.focus()},50);
+}
+const go=(v,x)=>{Object.assign(st,x||{},{view:v,del:null});render()};
+const shiftDay=n=>{const d=parse(st.day);d.setDate(d.getDate()+n);return iso(d)};
+const shiftMonth=n=>{const [y,m]=st.month.split('-').map(Number);return iso(new Date(y,m-1+n,1)).slice(0,7)};
+
+document.addEventListener('input',e=>{
+  if(e.target.id==='amt'){
+    const d=e.target.value.replace(/\D/g,'').replace(/^0+/,'').slice(0,12);
+    e.target.value=d?Number(d).toLocaleString('id-ID'):'';
+  }
+});
+document.addEventListener('click',e=>{
+  const b=e.target.closest('[data-a]');if(!b)return;
+  const a=b.dataset.a;
+  if(a==='menu')go('menu');
+  else if(a==='add')go('add',{type:b.dataset.t});
+  else if(a==='day')go('day',{day:today()});
+  else if(a==='month')go('month',{month:today().slice(0,7)});
+  else if(a==='dprev')go('day',{day:shiftDay(-1)});
+  else if(a==='dnext')go('day',{day:shiftDay(1)});
+  else if(a==='mprev')go('month',{month:shiftMonth(-1)});
+  else if(a==='mnext')go('month',{month:shiftMonth(1)});
+  else if(a==='goday')go('day',{day:b.dataset.d});
+  else if(a==='del'){
+    if(st.del===b.dataset.id){data=data.filter(x=>x.id!==st.del);persist();st.del=null}
+    else st.del=b.dataset.id;
+    render();
+  }
+  else if(a==='save'){
+    const n=parseInt(document.getElementById('amt').value.replace(/\D/g,''),10)||0;
+    if(!n){
+      const box=document.getElementById('amtbox');box.classList.remove('err');void box.offsetWidth;box.classList.add('err');
+      document.getElementById('hint').textContent='Isi nominal lebih dari 0.';
+      return;
+    }
+    const date=document.getElementById('dt').value||today();
+    data.push({id:Date.now().toString(36)+Math.random().toString(36).slice(2,6),type:st.type,amount:n,note:document.getElementById('note').value.trim(),date});
+    persist();
+    go('menu',{toast:'Tersimpan'});
+    setTimeout(()=>{st.toast='';const t=document.getElementById('toast');t&&t.remove()},1800);
+  }
+});
+render();
+</script>
+</body>
+</html>
